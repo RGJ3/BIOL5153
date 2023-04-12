@@ -22,21 +22,35 @@ args = parser.parse_args()
 # use a for loop to open and read the GFF file
 
 with open(args.gff) as x:
+    
+    # loop over all the lines in the file
     for line in x:
-        GFF_lines = line.readlines()
+
+        # skip blank lines
+        if not line.strip():
+            continue
+            
+        # else it's not a blank line
+        else:
+            line = line.strip()
+
+            # split line on the tab character
+            columns = line.split('\t')
+
+            # give variable names to the columns
+            organism     = columns[0]
+            source       = columns[1]
+            feature_type = columns[2]
+            start        = int(columns[3])
+            end          = int(columns[4])
+            length       = columns[5]
+            strand       = columns[6]
+            attributes   = columns[8]
 
 
-# strip the line breaks
+            # add the length to column 5
+            columns[5] = str(end - start + 1)
 
-for lines in GFF_lines:
-    lines_stripped = lines.strip()
-
-# use split() to isolate data in columns
-
-for columns in lines_stripped:
-    split_columns = columns.strip()
-
-# print contents of specific columns in relation to eachother
-
-length = int(split_columns[4]) - int(split_columns[3])
-print(length)
+            # join columns back into a tab-separated line
+            new_line = "/t".join(columns)
+            print(new_line)
